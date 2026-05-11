@@ -566,7 +566,7 @@ async function CSV2Array(filePath) {
 
 // csvのデータをIndexedDBに保存する形式に変換
 async function convertForDB() {
-	const wordData = await CSV2Array('words.csv')
+	const wordData = await CSV2Array('./words.csv')
 
 	const wordDataForDB = wordData.map(wd => ({
 		word: wd[0],
