@@ -171,15 +171,15 @@ function onClickAllQuizIndex(idx) {
 }
 
 window.addEventListener('keydown', (event) => {
-	if(event.key == '1' || event.key == '2' || event.key == '3'|| event.key == '4'){
+	if (event.key == '1' || event.key == '2' || event.key == '3' || event.key == '4') {
 		const optBtn = document.getElementById(`opt-btn-${event.key}`);
 		optBtn.click();
 	}
-	else if(event.key == 'Enter'){
+	else if (event.key == 'Enter') {
 		const checkAnsBtn = document.getElementById('checkAnswerBtn');
-		if(checkAnsBtn.disabled === false){
+		if (checkAnsBtn.disabled === false) {
 			checkAnsBtn.click();
-		}else{
+		} else {
 			const nextBtn = document.getElementById('nextBtn');
 			nextBtn.click();
 		}
@@ -223,38 +223,40 @@ function dispQuiz(idx, wordList) {
 
 	let transOptController = new AbortController();
 
-	
+	// ==== 問題リストシャッフル ====
+	let shuffledOptNumForAns = shuffleArray(wordList);
+	console.log('shuffle', shuffledOptNumForAns)
+
 	// モーダルを閉じたときの処理
 	function closeDialog() {
 		const noWordDialog = document.getElementById('no-word-dialog');
 		noWordDialog.close();
 		backBtn.click();
 	}
-	
+
 	// 単語がなかった場合の処理
 	if (wordList.length === 0) {
+		shuffledOptNumForAns = [];
 		// モーダル表示
 		const noWordDialog = document.getElementById('no-word-dialog');
 		noWordDialog.showModal();
-		
+
 		// ボタンクリックイベント
 		const closeDialogBtn = document.getElementById('close-dialog-btn');
 		closeDialogBtn.removeEventListener('click', closeDialog);
 		closeDialogBtn.addEventListener('click', closeDialog);
-		
+
 		// cancelイベント(Escキーなど)
 		noWordDialog.removeEventListener('cancel', closeDialog);
 		noWordDialog.addEventListener('cancel', closeDialog);
-		
+
 		return;
 	}
-	
-	// ==== 問題リストシャッフル ====
-	let shuffledOptNumForAns = shuffleArray(wordList);
-	console.log('shuffle', shuffledOptNumForAns)
+
 
 	// ==== 問題表示 ====
 	function dispQuestion() {
+		console.log('dispQuestion')
 		// ==== 問題番号表示 ====
 		const indexnum = document.getElementById('indexNum');
 		indexnum.innerText = `${idx + 1}~${Math.min(idx + 100, FlashCardApp.data.allWords.length)}`;
@@ -262,7 +264,7 @@ function dispQuiz(idx, wordList) {
 		const indexCount = document.getElementById('count');
 		indexCount.innerText = `Q. ${cnt + 1}`;
 
-		const transRate = document.getElementById('transRate');
+		const transRate = document.getElementById('rate');
 		if (cnt > 0) {
 			transRate.innerHTML = `${Math.round(transCorrectCnt / cnt * 100)}<span class="per">%</span>`;
 		} else {
@@ -275,12 +277,12 @@ function dispQuiz(idx, wordList) {
 		questions.forEach((q, i) => {
 			if (i == 1 || cnt == 0) {
 				q.innerText = shuffledOptNumForAns[cnt]['word'];
-			} 
+			}
 			else {
 				flipRightPage.addEventListener('transitionend', () => {
 					console.log(shuffledOptNumForAns)
 					q.innerText = shuffledOptNumForAns[cnt]['word'];
-				}, {once: true});
+				}, { once: true });
 			}
 		});
 	}
@@ -294,15 +296,15 @@ function dispQuiz(idx, wordList) {
 		// 現在の正解以外のインデックスをすべて取得
 		let otherWords = [];
 		for (let i = 0; i < FlashCardApp.data.allWords.length; i++) {
-			if (FlashCardApp.data.allWords[i]['id'] !== shuffledOptNumForAns[cnt]['id']){
+			if (FlashCardApp.data.allWords[i]['id'] !== shuffledOptNumForAns[cnt]['id']) {
 				otherWords.push(FlashCardApp.data.allWords[i]);
-			}else{
+			} else {
 				// 出題用idリストに正解のidを追加
 				transSelectedNum.push(i);
 			}
 		}
 		console.log('otherWords', otherWords)
-		
+
 		// 他の単語から最大3つランダムに選ぶ
 		let randomOthers = shuffleArray(otherWords).slice(0, 3);
 		console.log('randomOthers', randomOthers)
@@ -313,7 +315,7 @@ function dispQuiz(idx, wordList) {
 			transSelectedNum.push(ro['id'] - 1);
 		});
 		console.log('transSelectedNum', transSelectedNum)
-		
+
 		let shuffledTransSelectedNum = shuffleArray(transSelectedNum);
 		console.log(shuffledTransSelectedNum)
 
@@ -428,6 +430,11 @@ function dispQuiz(idx, wordList) {
 		} else {
 			card.classList.remove('flipped');
 			shuffledOptNumForAns = [];
+			// 左ページの問題を消す
+			const questions = document.querySelectorAll('.question');
+			questions.forEach(q => {
+				q.innerText = '';
+			});
 			dispFinish(transCorrectCnt, wordList.length);
 		}
 	}, { signal });
@@ -480,7 +487,7 @@ function dispQuiz(idx, wordList) {
 		nextBtn.disabled = true;	// nextButton 無効化
 
 		transOptController.abort();	// EventListener remove
-		transOptController = new AbortController();
+		transOptController = new AbortController();	// controller再生成
 
 		// 右ページの解答欄を戻す
 		const transAnsAreaImgDash = document.querySelectorAll('.translation-area-dashed-frame');
