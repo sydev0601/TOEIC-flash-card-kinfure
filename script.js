@@ -223,34 +223,35 @@ function dispQuiz(idx, wordList) {
 
 	let transOptController = new AbortController();
 
-	// ==== 問題リストシャッフル ====
-	let shuffledOptNumForAns = shuffleArray(wordList);
-	console.log('shuffle', shuffledOptNumForAns)
-
+	
 	// モーダルを閉じたときの処理
 	function closeDialog() {
 		const noWordDialog = document.getElementById('no-word-dialog');
 		noWordDialog.close();
 		backBtn.click();
 	}
-
+	
 	// 単語がなかった場合の処理
 	if (wordList.length === 0) {
 		// モーダル表示
 		const noWordDialog = document.getElementById('no-word-dialog');
 		noWordDialog.showModal();
-
+		
 		// ボタンクリックイベント
 		const closeDialogBtn = document.getElementById('close-dialog-btn');
 		closeDialogBtn.removeEventListener('click', closeDialog);
 		closeDialogBtn.addEventListener('click', closeDialog);
-
+		
 		// cancelイベント(Escキーなど)
 		noWordDialog.removeEventListener('cancel', closeDialog);
 		noWordDialog.addEventListener('cancel', closeDialog);
-
+		
 		return;
 	}
+	
+	// ==== 問題リストシャッフル ====
+	let shuffledOptNumForAns = shuffleArray(wordList);
+	console.log('shuffle', shuffledOptNumForAns)
 
 	// ==== 問題表示 ====
 	function dispQuestion() {
