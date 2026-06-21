@@ -165,7 +165,7 @@ function onClickAllQuizIndex(idx) {
 			}
 		});
 	}
-	console.log(slicedWordData);
+	// console.log(slicedWordData);
 
 	dispQuiz(idx, slicedWordData);
 }
@@ -203,7 +203,6 @@ function dispQuiz(idx, wordList) {
 	nextBtn.disabled = true;
 
 	if (FlashCardApp.data.backBtnEventFlag === false) {
-		console.log('back')
 		backBtn.addEventListener('click', () => {
 			reset();
 			FlashCardApp.data.backBtnEventFlag = true;
@@ -225,7 +224,6 @@ function dispQuiz(idx, wordList) {
 
 	// ==== 問題リストシャッフル ====
 	let shuffledOptNumForAns = shuffleArray(wordList);
-	console.log('shuffle', shuffledOptNumForAns)
 
 	// モーダルを閉じたときの処理
 	function closeDialog() {
@@ -256,7 +254,6 @@ function dispQuiz(idx, wordList) {
 
 	// ==== 問題表示 ====
 	function dispQuestion() {
-		console.log('dispQuestion')
 		// ==== 問題番号表示 ====
 		const indexnum = document.getElementById('indexNum');
 		indexnum.innerText = `${idx + 1}~${Math.min(idx + 100, FlashCardApp.data.allWords.length)}`;
@@ -280,10 +277,10 @@ function dispQuiz(idx, wordList) {
 			}
 			else {
 				flipRightPage.addEventListener('transitionend', () => {
-					console.log(shuffledOptNumForAns)
 					q.innerText = shuffledOptNumForAns[cnt]['word'];
 				}, { once: true });
 			}
+			adjustFontSize('q');
 		});
 	}
 	dispQuestion();
@@ -303,21 +300,16 @@ function dispQuiz(idx, wordList) {
 				transSelectedNum.push(i);
 			}
 		}
-		console.log('otherWords', otherWords)
 
 		// 他の単語から最大3つランダムに選ぶ
 		let randomOthers = shuffleArray(otherWords).slice(0, 3);
-		console.log('randomOthers', randomOthers)
-		console.log('randomOthers', randomOthers)
 
 		// 出題用idリストに正解以外のidを追加
 		randomOthers.forEach(ro => {
 			transSelectedNum.push(ro['id'] - 1);
 		});
-		console.log('transSelectedNum', transSelectedNum)
 
 		let shuffledTransSelectedNum = shuffleArray(transSelectedNum);
-		console.log(shuffledTransSelectedNum)
 
 		// ==== 訳 選択肢表示 ====
 		const translationOpts = document.querySelectorAll('.translationOpt');
@@ -345,6 +337,7 @@ function dispQuiz(idx, wordList) {
 				transAns.forEach(ans => {
 					ans.innerText = FlashCardApp.data.allWords[shuffledTransSelectedNum[i]]['japanese'];
 				});
+				adjustFontSize('a');
 			}, { signal: transOptController.signal });
 		});
 	}
@@ -482,8 +475,6 @@ function dispQuiz(idx, wordList) {
 	}, { signal });
 
 	function reset() {
-		console.log('reset')
-
 		nextBtn.disabled = true;	// nextButton 無効化
 
 		transOptController.abort();	// EventListener remove
@@ -553,6 +544,41 @@ function dispFinish(transScore, qNum) {
 	});
 }
 
+function adjustFontSize(type){
+	const MAX_FONT_SIZE = 44;
+	const MIN_FONT_SIZE = 10;
+
+	let containerWidth = 0;
+	let textBoxes = null;
+	if (type === 'q'){
+		containerWidth = document.getElementById('leftPage').clientWidth - 60;
+		textBoxes = document.querySelectorAll('.question');
+	}else if(type === 'a'){
+		containerWidth = document.querySelector('.translationArea').clientWidth - 10;
+		console.log(containerWidth)
+		textBoxes = document.querySelectorAll('.transAns');
+	}
+
+	if (!textBoxes || textBoxes.length === 0) {
+		return; 
+    }
+
+	textBoxes[0].style.fontSize = `${MAX_FONT_SIZE}px`;
+	let textWidth = textBoxes[0].scrollWidth;
+
+	if (textWidth > containerWidth){
+		let calculatedSize = MAX_FONT_SIZE * (containerWidth / textWidth);
+
+		let finalSize = Math.max(calculatedSize, MIN_FONT_SIZE);
+
+		textBoxes.forEach((t) => {
+			t.style.fontSize = `${finalSize}px`;
+		});
+	}
+}
+
+const observer = new ResizeObserver(adjustFontSize);
+observer.observe(document.getElementById('leftPage'))
 
 // .jsonl => array
 async function CSV2Array(filePath) {

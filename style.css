@@ -349,10 +349,12 @@ img {
 #leftPage>.overlap-parent,
 #flipLeftPage>.overlap-parent {
 	container-type: inline-size;
+	overflow: hidden;
 }
 
 #leftPage>.overlap-parent>div,
 #flipLeftPage>.overlap-parent>div {
+	display: inline-block;
 	position: absolute;
 	width: 100%;
 	top: 50%;
@@ -361,8 +363,8 @@ img {
 	text-align: center;
 	justify-content: center;
 	margin: 0;
-	font-size: 15cqw;
 	color: black;
+	white-space: hidden;
 }
 
 /* 右ページ用 */
@@ -383,7 +385,13 @@ img {
 	width: 100%;
 }
 
+.translationArea>.overlap-parent{
+	container-type: inline-size;
+	overflow: hidden;
+}
+
 .translationArea>.overlap-parent>.transAns {
+	display: inline-block;
 	position: absolute;
 	width: 100%;
 	top: 50%;
@@ -391,8 +399,8 @@ img {
 	transform: translate(-50%, -50%);
 	text-align: center;
 	margin: 0;
-	font-size: x-large;
-	font-weight: 700;
+	/* font-weight: 700; */
+	white-space: nowrap;
 }
 
 .translationArea>.overlap-parent>.resultIcon {
@@ -442,6 +450,7 @@ img {
 
 #selectionArea>div {
 	display: grid;
+	width: 60%;
 	grid-template-rows: repeat(4, 1fr);
 	gap: 10px;
 	place-items: center;
