@@ -545,15 +545,19 @@ function dispFinish(transScore, qNum) {
 }
 
 function adjustFontSize(type){
-	const MAX_FONT_SIZE = 44;
-	const MIN_FONT_SIZE = 10;
+	let MAX_FONT_SIZE = 44;
+	let MIN_FONT_SIZE = 10;
 
 	let containerWidth = 0;
 	let textBoxes = null;
 	if (type === 'q'){
+		MAX_FONT_SIZE = 44;
+		MIN_FONT_SIZE = 24;
 		containerWidth = document.getElementById('leftPage').clientWidth - 60;
 		textBoxes = document.querySelectorAll('.question');
 	}else if(type === 'a'){
+		MAX_FONT_SIZE = 24;
+		MIN_FONT_SIZE = 10;
 		containerWidth = document.querySelector('.translationArea').clientWidth - 10;
 		console.log(containerWidth)
 		textBoxes = document.querySelectorAll('.transAns');
