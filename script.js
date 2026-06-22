@@ -274,13 +274,14 @@ function dispQuiz(idx, wordList) {
 		questions.forEach((q, i) => {
 			if (i == 1 || cnt == 0) {
 				q.innerText = shuffledOptNumForAns[cnt]['word'];
+				adjustFontSize('q');
 			}
 			else {
 				flipRightPage.addEventListener('transitionend', () => {
 					q.innerText = shuffledOptNumForAns[cnt]['word'];
+					adjustFontSize('q');
 				}, { once: true });
 			}
-			adjustFontSize('q');
 		});
 	}
 	dispQuestion();
@@ -547,7 +548,7 @@ function dispFinish(transScore, qNum) {
 function adjustFontSize(type){
 	let MAX_FONT_SIZE = 44;
 	let MIN_FONT_SIZE = 10;
-
+	
 	let containerWidth = 0;
 	let textBoxes = null;
 	if (type === 'q'){
@@ -559,20 +560,19 @@ function adjustFontSize(type){
 		MAX_FONT_SIZE = 24;
 		MIN_FONT_SIZE = 10;
 		containerWidth = document.querySelector('.translationArea').clientWidth - 10;
-		console.log(containerWidth)
 		textBoxes = document.querySelectorAll('.transAns');
 	}
-
+	
 	if (!textBoxes || textBoxes.length === 0) {
 		return; 
     }
-
+	
 	textBoxes[0].style.fontSize = `${MAX_FONT_SIZE}px`;
 	let textWidth = textBoxes[0].scrollWidth;
-
+	
 	if (textWidth > containerWidth){
 		let calculatedSize = MAX_FONT_SIZE * (containerWidth / textWidth);
-
+		
 		let finalSize = Math.max(calculatedSize, MIN_FONT_SIZE);
 
 		textBoxes.forEach((t) => {
@@ -581,8 +581,14 @@ function adjustFontSize(type){
 	}
 }
 
-const observer = new ResizeObserver(adjustFontSize);
-observer.observe(document.getElementById('leftPage'))
+const observer = new ResizeObserver(() => {
+    // クイズ画面が表示されているときだけ実行（clientWidthが0でないか確認）
+    if (document.getElementById('quizPlay').classList.contains('dispNone')) return;
+    
+    adjustFontSize('q');
+    adjustFontSize('a');
+});
+observer.observe(document.getElementById('leftPage'));
 
 // .jsonl => array
 async function CSV2Array(filePath) {
