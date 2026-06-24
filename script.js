@@ -178,7 +178,6 @@ window.addEventListener('keydown', (event) => {
 	else if (event.key == 'Enter') {
 		const optionCover = document.getElementById('translationSelectionArea-cover');
 		const checkAnsBtn = document.getElementById('checkAnswerBtn');
-		console.log(optionCover.classList.contains('visible-hidden-fade'))
 		if(optionCover.classList.contains('visible-hidden-fade') === false){
 			optionCover.classList.add('visible-hidden-fade');
 		}
