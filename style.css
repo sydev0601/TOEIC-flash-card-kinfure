@@ -481,9 +481,43 @@ img {
 }
 
 #translationSelectionArea {
+	position: relative;
 	width: 40%;
 	min-width: 170px;
 	border-color: #AFBEFD !important;
+}
+
+#translationSelectionArea-cover{
+	position: absolute;
+	border-radius: 8px;
+	background-color: #dbe2ff;
+	background-image: repeating-linear-gradient(45deg, #b4c2f05e, #b4c2f05e 4px, transparent 4px, transparent 32px), repeating-linear-gradient(-45deg, #b4c2f05e, #b4c2f05e 4px, transparent 4px, transparent 32px);
+	top: 3%;
+    left: 2%;
+    width: 96%;
+    height: 94%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.visible-hidden-fade{
+	animation: fadeOut 0.5s ease-in-out forwards;
+}
+@keyframes fadeOut {
+	0% { 
+        opacity: 1;
+        visibility: visible;
+    }
+    99% {
+        opacity: 0;
+        visibility: visible;
+    }
+    100% { 
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 #translationSelectionArea button {

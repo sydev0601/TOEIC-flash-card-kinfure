@@ -176,8 +176,13 @@ window.addEventListener('keydown', (event) => {
 		optBtn.click();
 	}
 	else if (event.key == 'Enter') {
+		const optionCover = document.getElementById('translationSelectionArea-cover');
 		const checkAnsBtn = document.getElementById('checkAnswerBtn');
-		if (checkAnsBtn.disabled === false) {
+		console.log(optionCover.classList.contains('visible-hidden-fade'))
+		if(optionCover.classList.contains('visible-hidden-fade') === false){
+			optionCover.classList.add('visible-hidden-fade');
+		}
+		else if (checkAnsBtn.disabled === false) {
 			checkAnsBtn.click();
 		} else {
 			const nextBtn = document.getElementById('nextBtn');
@@ -501,6 +506,10 @@ function dispQuiz(idx, wordList) {
 			t.disabled = false;
 			t.innerText = '';
 		});
+
+		// 選択肢をカバーする
+		const optionCover = document.getElementById('translationSelectionArea-cover');
+		optionCover.classList.remove('visible-hidden-fade');
 
 		// 正解or不正解アイコンを非表示にする
 		const transCorrectIcon = document.getElementById('transCorrectIcon');
