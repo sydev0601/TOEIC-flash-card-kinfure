@@ -190,6 +190,12 @@ window.addEventListener('keydown', (event) => {
 	}
 });
 
+// 選択肢をカバーする
+const optCover = document.getElementById('translationSelectionArea-cover');
+optCover.addEventListener('click', () => {
+	optCover.classList.add('visible-hidden-fade');
+});
+
 let globalQuizController = null;
 
 function dispQuiz(idx, wordList) {
